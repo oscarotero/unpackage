@@ -1,0 +1,11 @@
+{
+  "lock": false,
+  "tasks": {
+    "test": "deno test --allow-net test.ts"
+  },
+  "fmt": {
+    "exclude": [
+      "CHANGELOG.md"
+    ]
+  }
+}
