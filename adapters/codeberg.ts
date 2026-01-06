@@ -1,9 +1,9 @@
 import { Adapter } from "./adapter.ts";
 import { parse, untar, type Version } from "../utils.ts";
 
-const SPECIFIER = /^gh:([^/]+\/[^/@]+)(@([^/]+))?(\/.+)?$/;
+const SPECIFIER = /^cb:([^/]+\/[^/@]+)(@([^/]+))?(\/.+)?$/;
 
-export default class GitHub extends Adapter {
+export default class Codeberg extends Adapter {
   parse(specifier: string): [string, string, string] | undefined {
     const match = specifier.match(SPECIFIER);
 
@@ -20,7 +20,7 @@ export default class GitHub extends Adapter {
   }
 
   async getVersions(name: string) {
-    const url = `https://api.github.com/repos/${name}/tags?per_page=100`;
+    const url = `https://codeberg.org/api/v1/repos/${name}/tags?limit=100`;
     const response = await this.fetch(url);
     const tags = await response.json();
 
@@ -43,7 +43,7 @@ export default class GitHub extends Adapter {
 
   async *getFiles(version: Version, pattern: string): AsyncGenerator<File> {
     const { name, tag } = version;
-    const url = `https://api.github.com/repos/${name}/tarball/refs/tags/${tag}`;
+    const url = `https://codeberg.org/${name}/archive/${tag}.tar.gz`;
     const response = await this.fetch(url);
 
     if (!response.ok) {

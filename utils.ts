@@ -4,21 +4,15 @@ export {
   maxSatisfying,
   parse,
   parseRange,
-} from "jsr:@std/semver@1.0.5";
-import type { SemVer } from "jsr:@std/semver@1.0.5";
-import { UntarStream } from "jsr:@std/tar@0.1.7/untar-stream";
-import { globToRegExp } from "jsr:@std/path@1.1.2/glob-to-regexp";
+} from "jsr:@std/semver@1.0.7";
+import type { SemVer } from "jsr:@std/semver@1.0.7";
+import { UntarStream } from "jsr:@std/tar@0.1.9/untar-stream";
+import { globToRegExp } from "jsr:@std/path@1.1.4/glob-to-regexp";
 
 export interface Version {
   name: string;
   tag: string;
   semVer: SemVer;
-}
-
-export interface Adapter<V = Version> {
-  parse(specifier: string): [string, string, string] | undefined;
-  getVersions(name: string): Promise<V[]>;
-  getFiles(version: V, pattern: string): AsyncGenerator<File>;
 }
 
 export async function* untar(
@@ -40,7 +34,8 @@ export async function* untar(
     }
     const content = await getContent(stream);
     let path = removeFirstDirectory(entry.path);
-    if (!path || regexp.test(path) === false) {
+
+    if (!path || regexp.test(path) === false || path === "/") {
       continue;
     }
 
@@ -56,11 +51,11 @@ export async function* untar(
 
 async function getContent(stream: ReadableStream<Uint8Array>): Promise<Blob> {
   const reader = stream.getReader();
-  const chunks: Uint8Array[] = [];
+  const chunks: Uint8Array<ArrayBuffer>[] = [];
   let result = await reader.read();
 
   while (!result.done) {
-    chunks.push(result.value);
+    chunks.push(result.value as Uint8Array<ArrayBuffer>);
     result = await reader.read();
   }
 

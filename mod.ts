@@ -1,10 +1,21 @@
 import { maxSatisfying, parseRange } from "./utils.ts";
+import type { Options } from "./adapters/adapter.ts";
 import Github from "./adapters/github.ts";
+import GitLab from "./adapters/gitlab.ts";
+import Codeberg from "./adapters/codeberg.ts";
 import NPM from "./adapters/npm.ts";
 
-const adapters = [new Github(), new NPM()];
+export default async function* (
+  specifier: string,
+  options?: Options,
+): AsyncGenerator<File> {
+  const adapters = [
+    new Github(options),
+    new GitLab(options),
+    new NPM(options),
+    new Codeberg(options),
+  ];
 
-export default async function* (specifier: string): AsyncGenerator<File> {
   for (const adapter of adapters) {
     const parsed = adapter.parse(specifier);
     if (!parsed) {

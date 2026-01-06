@@ -1,8 +1,9 @@
-import { type Adapter, format, parse, untar, type Version } from "../utils.ts";
+import { Adapter } from "./adapter.ts";
+import { format, parse, untar, type Version } from "../utils.ts";
 
 const SPECIFIER = /^npm:(@[^/]+\/)?([^@/]+)(@([^/]+))?(\/.+)?$/;
 
-export default class NPM implements Adapter {
+export default class NPM extends Adapter {
   parse(specifier: string): [string, string, string] | undefined {
     const match = specifier.match(SPECIFIER);
 
@@ -20,7 +21,7 @@ export default class NPM implements Adapter {
 
   async getVersions(name: string) {
     const url = `https://registry.npmjs.org/${name}`;
-    const response = await fetch(url);
+    const response = await this.fetch(url);
     const info = await response.json();
 
     if (!info.versions) {
@@ -50,7 +51,7 @@ export default class NPM implements Adapter {
     const url = `https://registry.npmjs.org/${name}/-/${file}-${
       format(semVer)
     }.tgz`;
-    const response = await fetch(url);
+    const response = await this.fetch(url);
 
     if (!response.ok) {
       throw new Error(
