@@ -5,15 +5,8 @@ export {
   parse,
   parseRange,
 } from "jsr:@std/semver@1.0.7";
-import type { SemVer } from "jsr:@std/semver@1.0.7";
 import { UntarStream } from "jsr:@std/tar@0.1.9/untar-stream";
 import { globToRegExp } from "jsr:@std/path@1.1.4/glob-to-regexp";
-
-export interface Version {
-  name: string;
-  tag: string;
-  semVer: SemVer;
-}
 
 export async function* untar(
   blob: Blob,

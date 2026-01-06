@@ -30,6 +30,22 @@ Deno.test("GitHub (cache)", async () => {
   assertEquals(files.get("/jsx-runtime.ts"), 5772);
 });
 
+Deno.test("GitLab", async () => {
+  const files = await getFiles(
+    "gl:john.carroll.p/rschedule@1.2.3/packages/core/src/**/*.ts",
+  );
+
+  assertEquals(files.size, 102);
+  assertEquals(files.get("/index.ts"), 183);
+});
+
+Deno.test("Codeberg", async () => {
+  const files = await getFiles("cb:oom-components/tab/**/*.js");
+
+  assertEquals(files.size, 1);
+  assertEquals(files.get("/src/tab.js"), 4027);
+});
+
 async function getFiles(
   pkg: string,
   cache = false,

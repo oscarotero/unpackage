@@ -1,5 +1,5 @@
-import { Adapter } from "./adapter.ts";
-import { format, parse, untar, type Version } from "../utils.ts";
+import { Adapter, type Version } from "./adapter.ts";
+import { format, parse, untar } from "../utils.ts";
 
 const SPECIFIER = /^npm:(@[^/]+\/)?([^@/]+)(@([^/]+))?(\/.+)?$/;
 
